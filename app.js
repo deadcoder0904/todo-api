@@ -15,12 +15,28 @@ app.get('/',function(req, res){
     res.send('TODO API ROOT');
 });
 
-//GET /todos
+//GET /todos?completed=true&description="Watch the"
 app.get('/todos',function(req, res){
-    res.json(todos);
+    var query = req.query;
+    var completed;
+    var filteredTodos = todos;
+
+    if(query.hasOwnProperty('completed') && query.completed === 'true')
+        filteredTodos = _.where(filteredTodos,{completed: true});
+    else if(query.hasOwnProperty('completed') && query.completed === 'false')
+        filteredTodos = _.where(filteredTodos,{completed: false});
+
+    if(query.hasOwnProperty('description') && query.description.length > 0)
+    {
+        filteredTodos = _.filter(filteredTodos,function(todo){
+            return todo.description.toLowerCase().indexOf(query.description.toLowerCase()) > -1;
+        });
+    }
+    res.json(filteredTodos);
+
 });
 
-//GET todos/:id?completed=true&description="Watch the"
+//GET todos/:id
 app.get('/todos/:id',function(req, res){
     var todoId = parseInt(req.params.id, 10);
     var matchedTodo = _.findWhere(todos,{id: todoId});
@@ -30,8 +46,6 @@ app.get('/todos/:id',function(req, res){
             matchedTodo = todo;
     });
 */
-
-
 
     if(matchedTodo)
         res.json(matchedTodo);
