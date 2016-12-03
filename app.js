@@ -52,7 +52,7 @@ app.get('/todos/:id',function(req, res){
     else res.status(400).json({"error":"There exist no item with id of " + todoId});
 });
 
-//POST todos/:id
+//POST todos/
 app.post('/todos',function(req, res){
     var body = req.body;
 
